@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 随机宇宙 - Random Universe</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
+        
+        :root {
+            --primary: #00ffcc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 4.5rem;
+            background: linear-gradient(90deg, #00ffcc, #ff00cc, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ffcc; }
+            to { text-shadow: 0 0 40px #ff00cc; }
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        
+        .random-btn {
+            background: linear-gradient(45deg, #ff00cc, #00ffcc);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 30px 10px;
+            transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.4);
+        }
+        
+        .random-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 40px rgba(255, 0, 204, 0.6);
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-15px);
+        }
+        
+        .fact {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            min-height: 120px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            opacity: 0.7;
+            font-size: 0.95rem;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <header>
+            <h1>随机宇宙</h1>
+            <p class="subtitle">点击按钮，开启你的随机冒险 ✨</p>
+            
+            <button class="random-btn" onclick="generateRandomEverything()">
+                🎲 给我来点随机的！
+            </button>
+            <button class="random-btn" onclick="changeBackground()">
+                🌈 换个颜色
+            </button>
+        </header>
+
+        <div class="content">
+            <!-- 随机名言 -->
+            <div class="card">
+                <h2>💡 今日随机名言</h2>
+                <p id="quote" class="fact">"人生就像一盒巧克力，你永远不知道下一颗是什么味道。"</p>
+                <small>—— 随机森林</small>
+            </div>
+            
+            <!-- 随机事实 -->
+            <div class="card">
+                <h2>🧠 随机冷知识</h2>
+                <p id="fact" class="fact">章鱼有三个心脏，其中两个专门负责给鳃供血。</p>
+            </div>
+            
+            <!-- 随机颜色 -->
+            <div class="card">
+                <h2>🎨 你的幸运色</h2>
+                <div id="colorBox" style="height: 160px; border-radius: 16px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3);"></div>
+                <p id="colorCode">#00ffcc</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <p id="randomResult" style="font-size: 1.5rem; min-height: 60px;"></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>这是一个随机的 index.html 文件 • 由 Grok 生成</p>
+        <p>保存为 <strong>index.html</strong> 即可直接打开使用</p>
+    </footer>
+
+    <script>
+        // 随机名言库
+        const quotes = [
+            "生活不止眼前的苟且，还有诗和远方。",
+            "机会总是留给有准备的人。",
+            "保持饥饿，保持愚蠢。",
+            "未来属于那些相信自己梦想的人。",
+            "每一天都是新的开始。",
+            "简单是极致的复杂。",
+            "时间是最好的医生。"
+        ];
+        
+        // 随机冷知识
+        const facts = [
+            "蜂鸟是唯一能倒着飞的鸟。",
+            "人类打哈欠时，大猩猩也会跟着打哈欠。",
+            "一个普通的咖啡杯可以容纳大约 280 毫升液体。",
+            "北极熊的皮肤其实是黑色的，毛是透明的。",
+            "世界上最小的哺乳动物是鼩鼱，只有几克重。",
+            "金字塔的建造者其实是领工资的工人，不是奴隶。",
+            "章鱼有三个心脏。"
+        ];
+        
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+        
+        function generateRandomEverything() {
+            // 更新名言
+            document.getElementById('quote').textContent = `"${getRandomItem(quotes)}"`;
+            
+            // 更新冷知识
+            document.getElementById('fact').textContent = getRandomItem(facts);
+            
+            // 生成随机颜色
+            changeBackground(true);
+            
+            // 显示随机结果
+            const results = [
+                "今天适合喝奶茶 ☕",
+                "你今天会遇到好事！✨",
+                "推荐看一部老电影 🎥",
+                "去散步吧，外面空气很好 🌳",
+                "试试新发型！💇",
+                "今天是打电话给老朋友的日子 📞"
+            ];
+            document.getElementById('randomResult').textContent = 
+                "🎉 随机命运： " + getRandomItem(results);
+        }
+        
+        function changeBackground(isColorOnly = false) {
+            const colors = [
+                '#0f0c29', '#1a0033', '#003322', '#330011', 
+                '#1a1a2e', '#16213e', '#0f3460', '#533483'
+            ];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            if (!isColorOnly) {
+                document.body.style.background = `linear-gradient(135deg, ${randomColor}, #1e0533)`;
+            }
+            
+            // 随机卡片颜色
+            const colorBox = document.getElementById('colorBox');
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            const hex = `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+            
+            colorBox.style.background = hex;
+            document.getElementById('colorCode').textContent = hex;
+        }
+        
+        // 粒子背景效果
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = `${Math.random() * 5 + 2}px`;
+                particle.style.height = particle.style.width;
+                particle.style.background = 'rgba(0, 255, 204, 0.6)';
+                particle.style.borderRadius = '50%';
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                particle.style.opacity = Math.random() * 0.6 + 0.2;
+                particle.style.animation = `float ${Math.random() * 25 + 15}s linear infinite`;
+                container.appendChild(particle);
+            }
+        }
+        
+        // 添加漂浮动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translateY(100vh) rotate(0deg); }
+                100% { transform: translateY(-100vh) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 初始化
+        window.onload = () => {
+            createParticles();
+            generateRandomEverything();
+            setInterval(() => {
+                if (Math.random() > 0.7) changeBackground(true);
+            }, 8000);
+        };
+    </script>
+</body>
+</html>
